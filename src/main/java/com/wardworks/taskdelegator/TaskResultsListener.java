@@ -13,8 +13,8 @@ public interface TaskResultsListener {
     
     void started(Task task);
     
-    void complete(Object result);
+    void complete(TaskResult result);
     
-    void failed();
+    void failed(TaskResult result);
     
 }

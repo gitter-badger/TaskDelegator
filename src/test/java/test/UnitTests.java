@@ -11,6 +11,7 @@ import com.wardworks.taskdelegator.Task;
 import com.wardworks.taskdelegator.TaskHandler;
 import com.wardworks.taskdelegator.TaskPriority;
 import com.wardworks.taskdelegator.TaskResult;
+import com.wardworks.taskdelegator.TaskResultsListener;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,29 +35,28 @@ public class UnitTests {
     
     @Test
     public void testDelegatorTaskProcessed() throws InterruptedException{
-    
-        final Object[] results = new Object[5];
         
         Delegator delegator = Delegator.getInstance();
+        
+        TestListener testListener = new TestListener();
         
         delegator.addTaskQueue("test", new TaskHandler() {
 
             @Override
             public TaskResult processTask(Task task) {
-                results[0] = true;
-                results[1] = task.getType();
-                return new TaskResult(true, null);
+                return new TaskResult(true, true);
             }
             
-        });
+        }, testListener);
         
         delegator.pushTask(new Task("test"));
         
         Thread.sleep(200);
         
-        Assert.assertTrue((Boolean)results[0] == true);
-        
-        Assert.assertTrue(results[1].equals("test"));
+        Assert.assertTrue(testListener.getState() == TestListener.State.COMPLETE);
+        Assert.assertTrue(testListener.getTask().getType().equals("test"));
+        Assert.assertTrue(testListener.getTaskResult().isSuccess());
+        Assert.assertTrue((boolean)testListener.getTaskResult().getResult() == true);
         
     }
     

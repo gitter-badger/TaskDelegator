@@ -18,7 +18,7 @@ public abstract class TaskHandler implements Runnable{
     private Queue queue = null;
     private TaskResultsListener resultsListener = null;
     
-    void setQueue(Queue queue){
+    void setInputQueue(Queue queue){
     
         this.queue = queue;
     
@@ -57,11 +57,11 @@ public abstract class TaskHandler implements Runnable{
                 
                 if(result.isSuccess()){
                 
-                    resultsListener.complete(result.getResult());
+                    resultsListener.complete(result);
                 
                 }else{
                 
-                    resultsListener.failed();
+                    resultsListener.failed(result);
                 
                 }
                 

@@ -5,6 +5,9 @@
  */
 package com.wardworks.taskdelegator;
 
+import java.util.HashMap;
+import javafx.beans.binding.StringBinding;
+
 /**
  *
  * @author Gus

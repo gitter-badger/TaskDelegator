@@ -18,20 +18,13 @@ import java.util.logging.Logger;
 class Queue {
    
     String type = null;
-    BlockingQueue<Task> queue = null;
+    PriorityBlockingQueue<Task> queue = null;
 
     Queue(String type) {
         
         this.type = type;
-        this.queue = new ArrayBlockingQueue<>(10000);
-        
-    }
-    
-    void setPriorityBlockingQueue(){
-    
-        this.queue = null;
         this.queue = new PriorityBlockingQueue<>();
-    
+        
     }
     
     String getType() {

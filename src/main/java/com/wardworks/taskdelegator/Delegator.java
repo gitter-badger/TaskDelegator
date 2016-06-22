@@ -34,16 +34,12 @@ public class Delegator implements TaskResultsListener{
     public Delegator() {
         
         inputQueue = new Queue(null);
-        inputQueue.setPriorityBlockingQueue();
         
-        inputTaskSorter = new Sorter();
-        inputTaskSorter.setQueue(inputQueue);
+        inputTaskSorter = new Sorter(outputQueues);
+        inputTaskSorter.setInputQueue(inputQueue);
+        inputTaskSorter.start();
         
         taskHandlerThreads = new HashMap<>();
-        Thread sorterThread = new Thread(inputTaskSorter);
-        taskHandlerThreads.put(null, sorterThread);
-        sorterThread.start();
-        
         outputQueues = new HashMap<>();
         outputTaskHandlers = new HashMap<>();
         
@@ -62,8 +58,10 @@ public class Delegator implements TaskResultsListener{
     public void addTaskQueue(String type, TaskHandler handler, TaskResultsListener taskResultsListener){
     
         Queue queue = new Queue(type);
-        handler.setQueue(queue);
-        new Thread(handler).start();
+        handler.setInputQueue(queue);
+        Thread t = new Thread(handler);
+        taskHandlerThreads.put(type, t);
+        t.start();
         outputQueues.put(type, queue);
         outputTaskHandlers.put(type, handler);
         handler.setResultsListener(taskResultsListener == null ? this : taskResultsListener);
@@ -72,39 +70,39 @@ public class Delegator implements TaskResultsListener{
 
     @Override
     public void started(Task task) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.print("Task with no result listener started - " + task.toString());
     }
 
     @Override
-    public void complete(Object result) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void complete(TaskResult result) {
+        System.out.print("Task with no listener complete, result - " + result.getResult().toString());
     }
 
     @Override
-    public void failed() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void failed(TaskResult result) {
+        System.out.print("Task with no listener complete, result - " + result.toString());
     }
     
-    private class Sorter extends TaskHandler{
-
-        @Override
-        public TaskResult processTask(Task task) {
-            if(outputQueues.containsKey(task.getType())){
-            
-                outputQueues.get(task.getType()).addTask(task);
-                return new TaskResult(true, null);
-                        
-            }else{
-            
-                System.err.println("No output queue for type: " + task.getType() + ". Add via Delegator.getInstance().addTaskQueue(String, TaskHandler)");
-                return new TaskResult(true, null);
-            
-            }
-            
-        }
-    
-    
-    }
+//    private class Sorter extends TaskHandler{
+//
+//        @Override
+//        public TaskResult processTask(Task task) {
+//            if(outputQueues.containsKey(task.getType())){
+//            
+//                outputQueues.get(task.getType()).addTask(task);
+//                return new TaskResult(true, null);
+//                        
+//            }else{
+//            
+//                System.err.println("No output queue for type: " + task.getType() + ". Add via Delegator.getInstance().addTaskQueue(String, TaskHandler)");
+//                return new TaskResult(true, null);
+//            
+//            }
+//            
+//        }
+//    
+//    
+//    }
         
         
     
