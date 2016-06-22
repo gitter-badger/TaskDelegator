@@ -3,14 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
+package com.wardworks.taskdelegator;
 
-import com.wardworks.taskdelegator.Delegator;
 import org.junit.Test;
-import com.wardworks.taskdelegator.Task;
-import com.wardworks.taskdelegator.TaskHandler;
-import com.wardworks.taskdelegator.TaskPriority;
-import com.wardworks.taskdelegator.TaskResult;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,6 +57,10 @@ public class UnitTests {
     @Test
     public void testDelegatorPriority() throws InterruptedException{
     
+        final int taskTime = 1;
+        final int waitTime = taskTime * 150;
+        final int inputs = 100;
+        
         final int[] results = new int[3];
         
         Delegator delegator = Delegator.getInstance();
@@ -83,15 +82,16 @@ public class UnitTests {
                         break;
                 
                 }
+                
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(taskTime);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(UnitTests.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
                 return new TaskResult(true, null);
             }
-        });
+        }, new TestListener());
         
         /**
          * add tasks to the delegator with even priorities
@@ -105,17 +105,18 @@ public class UnitTests {
         
         }
         
-        Thread.sleep(1000);
+        Thread.sleep(waitTime);
         
         System.out.println(Arrays.toString(results));
         
         /**
-         * more or at least the same amount of high priority tasks handled compared to normal priority
-         * more or at least the same amount of normal priority tasks handled compared to low priority
+         * All high priority and up to half normal priority tasks should complete
+         * within taskTime. Low priority tasks should not start.
          */
         
-        Assert.assertTrue(results[0] >= results[1]);
-        Assert.assertTrue(results[1] >= results[2]);
+        Assert.assertTrue(results[0] == inputs);
+        Assert.assertTrue(results[1] <= waitTime);
+        Assert.assertTrue(results[2] == 0);
         
     }
     

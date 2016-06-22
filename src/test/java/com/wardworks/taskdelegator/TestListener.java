@@ -3,11 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package test;
-
-import com.wardworks.taskdelegator.Task;
-import com.wardworks.taskdelegator.TaskResult;
-import com.wardworks.taskdelegator.TaskResultsListener;
+package com.wardworks.taskdelegator;
 
 /**
  *

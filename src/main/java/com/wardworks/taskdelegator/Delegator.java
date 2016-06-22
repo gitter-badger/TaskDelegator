@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author Gus
  */
-public class Delegator implements TaskResultsListener{
+public class Delegator{
     
     private static Delegator instance = null;
     
@@ -39,7 +39,7 @@ public class Delegator implements TaskResultsListener{
         taskHandlers = new HashMap<>();
         
         inputTaskSorter = new Sorter(inputQueue, taskQueues);
-        inputTaskSorter.setResultsListener(this);
+        inputTaskSorter.setResultsListener(new SorterListener());
         inputTaskSorter.start();
         
     }
@@ -60,7 +60,7 @@ public class Delegator implements TaskResultsListener{
         taskQueues.put(type, taskQueue);
         
         handler.setInputQueue(taskQueue);
-        handler.setResultsListener(taskResultsListener == null ? this : taskResultsListener);
+        handler.setResultsListener(taskResultsListener == null ? new DefaultListener() : taskResultsListener);
         
         Thread taskThread = new Thread(handler);
         taskHandlerThreads.put(type, taskThread);
@@ -69,42 +69,6 @@ public class Delegator implements TaskResultsListener{
         taskThread.start();
         
     }
-
-    @Override
-    public void started(Task task) {
-        System.out.print("Task with no result listener started - " + task.toString());
-    }
-
-    @Override
-    public void complete(TaskResult result) {
-        System.out.print("Task with no listener complete, result - " + result.toString());
-    }
-
-    @Override
-    public void failed(TaskResult result) {
-        System.out.print("Task with no listener complete, result - " + result.toString());
-    }
-    
-//    private class Sorter extends TaskHandler{
-//
-//        @Override
-//        public TaskResult processTask(Task task) {
-//            if(outputQueues.containsKey(task.getType())){
-//            
-//                outputQueues.get(task.getType()).addTask(task);
-//                return new TaskResult(true, null);
-//                        
-//            }else{
-//            
-//                System.err.println("No output queue for type: " + task.getType() + ". Add via Delegator.getInstance().addTaskQueue(String, TaskHandler)");
-//                return new TaskResult(true, null);
-//            
-//            }
-//            
-//        }
-//    
-//    
-//    }
         
         
     
