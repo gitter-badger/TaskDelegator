@@ -16,9 +16,10 @@ public class Sorter extends TaskHandler{
     HashMap<String, Queue> outputQueues = null;
     Thread thread = null;
     
-    public Sorter(HashMap<String, Queue> outputQueues) {
+    public Sorter(Queue inputQueue, HashMap<String, Queue> outputQueues) {
         this.outputQueues = outputQueues;
         this.thread = new Thread(this);
+        setInputQueue(inputQueue);
     }
     
     public void start(){

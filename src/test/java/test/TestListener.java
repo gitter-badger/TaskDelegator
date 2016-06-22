@@ -42,21 +42,18 @@ public class TestListener implements TaskResultsListener{
     
     @Override
     public void started(Task task) {
-        System.out.println("task started - " + task.toString());
         this.state = State.STARTED;
         this.task = task;
     }
 
     @Override
     public void complete(TaskResult result) {
-        System.out.println("task complete.");
         this.state = State.COMPLETE;
         this.taskResult = result;
     }
 
     @Override
     public void failed(TaskResult result) {
-        System.out.println("task failed.");
         this.state = State.FAILED;
         this.taskResult = result;
     }

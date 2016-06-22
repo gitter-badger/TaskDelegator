@@ -11,7 +11,6 @@ import com.wardworks.taskdelegator.Task;
 import com.wardworks.taskdelegator.TaskHandler;
 import com.wardworks.taskdelegator.TaskPriority;
 import com.wardworks.taskdelegator.TaskResult;
-import com.wardworks.taskdelegator.TaskResultsListener;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;

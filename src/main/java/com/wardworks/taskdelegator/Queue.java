@@ -20,32 +20,34 @@ class Queue {
     String type = null;
     PriorityBlockingQueue<Task> queue = null;
 
-    Queue(String type) {
+    public Queue(String type) {
         
         this.type = type;
         this.queue = new PriorityBlockingQueue<>();
         
     }
     
-    String getType() {
+    public String getType() {
         return type;
     }
     
-    void addTask(Task task){
+    public void addTask(Task task){
     
         this.queue.add(task);
     
     }
     
-    Task getTask(){
+    public Task getTask(){
     
         try {
-            return queue.take();
+            Task task = queue.take();
+            return task;
         } catch (InterruptedException ex) {
             Logger.getLogger(Queue.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
         
-        return null;
+        
     
     }
     

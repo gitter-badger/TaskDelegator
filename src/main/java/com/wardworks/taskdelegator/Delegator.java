@@ -27,21 +27,20 @@ public class Delegator implements TaskResultsListener{
     
     Queue inputQueue = null;
     Sorter inputTaskSorter = null;
-    HashMap<String, Queue> outputQueues = null;
-    HashMap<String, TaskHandler> outputTaskHandlers = null;
+    HashMap<String, Queue> taskQueues = null;
+    HashMap<String, TaskHandler> taskHandlers = null;
     HashMap<String, Thread> taskHandlerThreads = null;
 
     public Delegator() {
         
         inputQueue = new Queue(null);
-        
-        inputTaskSorter = new Sorter(outputQueues);
-        inputTaskSorter.setInputQueue(inputQueue);
-        inputTaskSorter.start();
-        
         taskHandlerThreads = new HashMap<>();
-        outputQueues = new HashMap<>();
-        outputTaskHandlers = new HashMap<>();
+        taskQueues = new HashMap<>();
+        taskHandlers = new HashMap<>();
+        
+        inputTaskSorter = new Sorter(inputQueue, taskQueues);
+        inputTaskSorter.setResultsListener(this);
+        inputTaskSorter.start();
         
     }
     
@@ -57,14 +56,17 @@ public class Delegator implements TaskResultsListener{
     
     public void addTaskQueue(String type, TaskHandler handler, TaskResultsListener taskResultsListener){
     
-        Queue queue = new Queue(type);
-        handler.setInputQueue(queue);
-        Thread t = new Thread(handler);
-        taskHandlerThreads.put(type, t);
-        t.start();
-        outputQueues.put(type, queue);
-        outputTaskHandlers.put(type, handler);
+        Queue taskQueue = new Queue(type);
+        taskQueues.put(type, taskQueue);
+        
+        handler.setInputQueue(taskQueue);
         handler.setResultsListener(taskResultsListener == null ? this : taskResultsListener);
+        
+        Thread taskThread = new Thread(handler);
+        taskHandlerThreads.put(type, taskThread);
+        taskHandlers.put(type, handler);
+        
+        taskThread.start();
         
     }
 
@@ -75,7 +77,7 @@ public class Delegator implements TaskResultsListener{
 
     @Override
     public void complete(TaskResult result) {
-        System.out.print("Task with no listener complete, result - " + result.getResult().toString());
+        System.out.print("Task with no listener complete, result - " + result.toString());
     }
 
     @Override

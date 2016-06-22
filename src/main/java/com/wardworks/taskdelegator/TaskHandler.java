@@ -15,12 +15,12 @@ import java.util.logging.Logger;
 public abstract class TaskHandler implements Runnable{
 
     private boolean enabled = true;
-    private Queue queue = null;
+    private Queue inputQueue = null;
     private TaskResultsListener resultsListener = null;
     
     void setInputQueue(Queue queue){
     
-        this.queue = queue;
+        this.inputQueue = queue;
     
     }
     
@@ -41,15 +41,15 @@ public abstract class TaskHandler implements Runnable{
         
         while(enabled){
             
-            if(queue == null){
+            if(inputQueue == null){
             
                 System.err.println("Attempeted to start handler with no queue!");
             
             }
         
-            Task task = queue.getTask();
+            Task task = inputQueue.getTask();
             
-            resultsListener.started(task);
+            this.resultsListener.started(task);
             
             if(task != null){
                 
@@ -57,11 +57,11 @@ public abstract class TaskHandler implements Runnable{
                 
                 if(result.isSuccess()){
                 
-                    resultsListener.complete(result);
+                    this.resultsListener.complete(result);
                 
                 }else{
                 
-                    resultsListener.failed(result);
+                    this.resultsListener.failed(result);
                 
                 }
                 
